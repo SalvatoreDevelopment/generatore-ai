@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useLanguage } from "@/contexts/language-context"
 import { Clock } from "lucide-react"
 import { checkGenerationLimit } from "@/lib/rate-limit"
-import { useSocket } from "@/hooks/use-socket"
+import { useSocket } from '@/hooks/use-socket';
 
 export default function GenerationLimit() {
   const { t } = useLanguage()
@@ -13,8 +13,8 @@ export default function GenerationLimit() {
   const [isLoading, setIsLoading] = useState(true)
   const [lastCheck, setLastCheck] = useState<number>(0)
 
-  // Aggiungi questo hook per il socket
-  const { socket, isConnected } = useSocket()
+  // Usa l'hook per il socket
+  const { socket, isConnected } = useSocket();
 
   const checkLimit = async () => {
     try {
@@ -45,14 +45,21 @@ export default function GenerationLimit() {
 
   // Controlla lo stato all'avvio e ogni 30 secondi
   useEffect(() => {
-    checkLimit()
+    if (!socket) return;
+    
+    const handleLimitsReset = (data: { timestamp: number }) => {
+      console.log('Received limits reset event:', data);
+      // Ricontrolla immediatamente i limiti
+      checkLimit();
+    };
+  
+    socket.on('limitsReset', handleLimitsReset);
+    
 
-    const interval = setInterval(() => {
-      checkLimit()
-    }, 30000) // Controlla ogni 30 secondi
-
-    return () => clearInterval(interval)
-  }, [])
+    return () => {
+      socket.off('limits-reset', handleLimitsReset);
+    };
+  }, [socket]);
 
   // Aggiorna il tempo rimanente ogni secondo
   useEffect(() => {
@@ -98,29 +105,14 @@ export default function GenerationLimit() {
       checkLimit()
     }
 
+    
+
     window.addEventListener("imageGenerated", handleImageGenerated)
 
     return () => {
       window.removeEventListener("imageGenerated", handleImageGenerated)
     }
   }, [])
-
-  // Aggiungi questo useEffect per ascoltare gli eventi di reset
-  useEffect(() => {
-    if (!socket) return
-
-    const handleLimitsReset = (data: { timestamp: number }) => {
-      console.log("Received limits reset event:", data)
-      // Ricontrolla immediatamente i limiti
-      checkLimit()
-    }
-
-    socket.on("limits-reset", handleLimitsReset)
-
-    return () => {
-      socket.off("limits-reset", handleLimitsReset)
-    }
-  }, [socket])
 
   if (isLoading) {
     return null
