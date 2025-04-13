@@ -1,15 +1,15 @@
 // Questo è un frammento da aggiungere al file app/page.tsx esistente
 
 // Aggiungi questa importazione all'inizio del file
+// Correggi le importazioni per utilizzare i percorsi corretti
+import { LanguageProvider } from "@/contexts/language-context"
+import { ThemeProvider } from "@/contexts/theme-context"
+import Navbar from "@/components/navbar"
+import AdminPanel from "@/components/admin-panel"
+import ParticlesBackground from "@/components/particles-background"
+import ImageGenerator from "@/components/image-generator"
 import SocketDebug from "@/components/socket-debug"
-import LanguageProvider from "@/components/LanguageProvider"
-import ThemeProvider from "@/components/ThemeProvider"
-import ParticlesBackground from "@/components/ParticlesBackground"
-import Navbar from "@/components/Navbar"
-import ImageGenerator from "@/components/ImageGenerator"
-import AdminPanel from "@/components/AdminPanel"
 
-// Modifica il JSX per aggiungere il componente SocketDebug
 export default function Home() {
   return (
     <LanguageProvider>
