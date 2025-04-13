@@ -129,7 +129,7 @@ export default function AdminPanel() {
         variant="outline"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 bg-white/80 dark:bg-[#0a0f1f]/80 border-gray-300 dark:border-gray-800"
+        className="fixed bottom-4 right-4 bg-white/80 dark:bg-[#0a0f1f]/80 border-gray-300 dark:border-gray-800 z-50"
       >
         <Settings className="h-4 w-4 mr-2" />
         {t("adminPanel")}
@@ -138,7 +138,7 @@ export default function AdminPanel() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 p-4 bg-white dark:bg-[#0a0f1f] border border-gray-300 dark:border-gray-800 rounded-md shadow-lg w-80">
+    <div className="fixed bottom-4 right-4 p-4 bg-white dark:bg-[#0a0f1f] border border-gray-300 dark:border-gray-800 rounded-md shadow-lg w-80 z-50">
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-medium text-gray-900 dark:text-white">{t("adminPanel")}</h3>
         <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>

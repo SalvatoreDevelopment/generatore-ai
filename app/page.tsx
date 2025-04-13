@@ -9,12 +9,14 @@ export default function Home() {
   return (
     <LanguageProvider>
       <ThemeProvider>
-        <main className="min-h-screen bg-gray-50 dark:bg-[#010817] text-gray-900 dark:text-white flex flex-col">
+        <main className="min-h-screen bg-gray-50 dark:bg-[#010817] text-gray-900 dark:text-white flex flex-col relative">
           <ParticlesBackground />
-          <Navbar />
-          <div className="flex-1 p-4 md:p-8 relative z-10">
-            <div className="max-w-4xl mx-auto">
-              <ImageGenerator />
+          <div className="relative z-10 flex flex-col min-h-screen">
+            <Navbar />
+            <div className="flex-1 p-4 md:p-8">
+              <div className="max-w-4xl mx-auto">
+                <ImageGenerator />
+              </div>
             </div>
           </div>
           <AdminPanel />
