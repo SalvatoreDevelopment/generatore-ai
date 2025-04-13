@@ -1,3 +1,4 @@
+// Modifica in pages/api/socket.js
 import { Server } from 'socket.io';
 
 const SocketHandler = (req, res) => {
@@ -6,12 +7,13 @@ const SocketHandler = (req, res) => {
   } else {
     console.log('Socket is initializing');
     const io = new Server(res.socket.server, {
-      // Configurazione specifica per il sottodominio
       cors: {
-        origin: process.env.NEXT_PUBLIC_BASE_URL || 'https://generator.tuodominio.com',
+        origin: "*", // Permetti tutte le origini temporaneamente per debug
         methods: ["GET", "POST"],
         credentials: true
-      }
+      },
+      transports: ['websocket', 'polling'], // Supporta entrambi i metodi
+      allowEIO3: true // Compatibilità con client più vecchi
     });
     
     res.socket.server.io = io;
@@ -19,8 +21,11 @@ const SocketHandler = (req, res) => {
     io.on('connection', socket => {
       console.log(`Client connected: ${socket.id}`);
       
-      // Evento di test per verificare la connessione
+      // Invia un evento di test immediatamente dopo la connessione
       socket.emit('welcome', { message: 'WebSocket connection established!' });
+      
+      // Broadcast a tutti quando un nuovo client si connette
+      socket.broadcast.emit('user-connected', { id: socket.id });
       
       socket.on('disconnect', () => {
         console.log(`Client disconnected: ${socket.id}`);
