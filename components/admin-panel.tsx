@@ -101,6 +101,37 @@ export default function AdminPanel() {
     }
   }
 
+  // Aggiungi questa funzione nella componente AdminPanel
+  const handleResetAllLimits = async () => {
+    if (!password) {
+      setMessage(t("enterPassword"))
+      return
+    }
+
+    setIsResetting(true)
+    try {
+      const response = await fetch("/api/admin/reset-all-limits", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      })
+
+      const result = await response.json()
+      setMessage(result.message)
+
+      // Emetti un evento personalizzato per aggiornare altri componenti
+      if (typeof window !== "undefined" && result.success) {
+        const event = new CustomEvent("imageGenerated")
+        window.dispatchEvent(event)
+      }
+    } catch (error) {
+      console.error("Failed to reset all limits:", error)
+      setMessage(t("errorOccurred"))
+    } finally {
+      setIsResetting(false)
+    }
+  }
+
   const checkStatus = async () => {
     setIsLoading(true)
     try {
@@ -224,6 +255,23 @@ export default function AdminPanel() {
           >
             {isResetting ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : null}
             {t("resetUserLimit")}
+          </Button>
+        </div>
+
+        {/* Aggiungi questo pulsante nella UI, dopo il pulsante "Reset User Limit" */}
+        <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+          <h4 className="text-sm font-medium mb-2 text-gray-900 dark:text-white">Reset globale</h4>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+            Resetta i limiti di generazione per tutti gli utenti in tempo reale.
+          </p>
+
+          <Button
+            onClick={handleResetAllLimits}
+            disabled={isResetting}
+            className="w-full bg-purple-600 hover:bg-purple-700"
+          >
+            {isResetting ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : null}
+            Reset All Users Limits
           </Button>
         </div>
 

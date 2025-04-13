@@ -41,7 +41,7 @@ export default function ImageGenerator() {
       return { canGenerate: limitResult.canGenerate, adminEnabled: adminResult.enabled }
     } catch (error) {
       console.error("Failed to check generation status:", error)
-      return { canGenerate: false, adminEnabled: false }
+      return { canGenerate: false, adminEnabled: true } // Default a true per adminEnabled
     }
   }
 

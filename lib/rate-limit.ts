@@ -21,6 +21,27 @@ export async function checkGenerationLimit(): Promise<RateLimitCheck> {
   const lastGenerationCookie = cookieStore.get(GENERATION_LIMIT_COOKIE)
   const generationCountCookie = cookieStore.get(GENERATION_COUNT_COOKIE)
 
+  // Controlla se c'è stato un reset globale
+  const globalResetCookie = cookieStore.get("global_reset_timestamp")
+
+  if (globalResetCookie) {
+    const globalResetTime = Number.parseInt(globalResetCookie.value, 10)
+    const lastGenTime = lastGenerationCookie ? new Date(lastGenerationCookie.value).getTime() : 0
+
+    // Se il reset globale è più recente dell'ultima generazione, resetta i limiti
+    if (globalResetTime > lastGenTime) {
+      // Elimina i cookie di limite per questo utente
+      cookieStore.delete(GENERATION_LIMIT_COOKIE)
+      cookieStore.delete(GENERATION_COUNT_COOKIE)
+
+      return {
+        canGenerate: true,
+        generationsLeft: 1,
+        totalGenerations: 1,
+      }
+    }
+  }
+
   // Ottieni il limite di ore dalle impostazioni amministrative
   const limitHours = await getGenerationLimitHours()
 

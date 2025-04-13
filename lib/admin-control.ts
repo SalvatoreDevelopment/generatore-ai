@@ -26,7 +26,7 @@ export async function getGenerationSettings(): Promise<GenerationSettings> {
 
   // Valori predefiniti se i cookie non esistono
   return {
-    enabled: enabledCookie?.value === "true",
+    enabled: enabledCookie ? enabledCookie.value === "true" : true, // Default a true se il cookie non esiste
     limitCount: limitCountCookie ? Number.parseInt(limitCountCookie.value, 10) : 1,
     limitHours: limitHoursCookie ? Number.parseInt(limitHoursCookie.value, 10) : 24,
   }
